@@ -60,14 +60,14 @@ int r; 			//Blocco da rilocare in cima allo stack di R
 int min[MAXSTACK],min_sort[MAXSTACK];//vettore che contiene le priorità più alte di tutti i blocchi per ogni stack
 int maxstack,minstack;		 //contiene il massimo dei min[i]
 int R[HMAX]; 	//insieme di blocchi da rilocare (con politica LIFO)
-int i,j,z,stack=0,h,dimR=0,flag=0,s_star;
+int i,j,z,noloop=0,stack=0,h,dimR=0,flag=0,s_star;
 FILE * file;
 
 
 printf("------Euristica Min-Max del Blocks Relocation Problem (BRP)------\n");
 printf("-----------------      Università di Bologna    -------------\n");
 
-file= fopen ("//home//blizzard//Scrivania//BRP//istanze//data3-5-34.dat","r");
+file= fopen ("//home//blizzard//Scrivania//BRP//istanze//data3-4-6.dat","r");
 if (file!=NULL){
 	printf("Aperto file dati dell'istanza iniziale.... \n");
 }
@@ -95,17 +95,15 @@ for(i=0;i<=NSTACK-1; i++){
 
 //Applicazione dell'algoritmo sull'istanza bay per  NBLOCK-1
 for(priority=1;priority<=NBLOCK-1; priority++){
-	//da far iterare la parte successiva
-
 	//Troviamo l'insieme R e la sua dimensione
 	for(i=0;i<=NSTACK-1;i++){
-	  for(j=0;j<=NSTACK-1;j++){
-		  //cosideriamo la priorita(partiamo da 1)
+	  for(j=0;j<=(NSTACK-1)*3;j++){
 		  if((bay[i][j])==priority){
-			  for(z=j+1;z<=NSTACK-1;z++){
+			  printf("Dobbiamo prendere %d devo rilocare R:",priority);
+			  for(z=j+1;z<=(NSTACK-1)*3;z++){
 				  if(bay[i][z]!=0){
 					  R[dimR]=bay[i][z];
-					  //printf(" %d ,",bay[i][z]);
+					  printf(" %d,",bay[i][z]);
 					  dimR++;
 				  }
 			  }
@@ -116,7 +114,7 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 	//cicliamo per dimR (dobbiamo rilocare tutti i blocchi dell'insieme R
 	while(dimR!=0){
 		r=R[dimR-1]; //metto in r il blocco in cima ad R
-		printf("Riloco il blocco:%d con ",R[dimR-1]);
+		printf("\nRiloco il blocco:%d con ",R[dimR-1]);
 
 		//SETTIAMO min[i]
 		printf("min[i]:");
@@ -127,7 +125,7 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 			}
 			else{				//altrimenti per quello stack consideriamo il più prioritario
 				min[z]=bay[z][0];
-				for(j=1;j<=NSTACK-1;j++){
+				for(j=1;j<=(NSTACK-1)*3;j++){
 					if((bay[z][j]<min[z])&&(bay[z][j]!=0)){
 						min[z]=bay[z][j];
 					}
@@ -142,6 +140,7 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 		//usiamo un vettore min_sort di supporto per controllare i min[i]
 		//dal piu piccolo al piu grande (caso arg{ min[i]>r })
 		cp_vector(min_sort,min,NSTACK-1);
+		//printf("min copiata: %d %d %d %d %d \n",min_sort[0],min_sort[1],min_sort[2],min_sort[3],min_sort[4]);
 		BubbleSort(min_sort,NSTACK); //ordiniamo dal più piccolo al più grande
 		//printf("min normali: %d %d %d %d %d \n",min[0],min[1],min[2],min[3],min[4]);
 		//printf("min ordinati: %d %d %d %d %d \n",min_sort[0],min_sort[1],min_sort[2],min_sort[3],min_sort[4]);
@@ -160,18 +159,21 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 				  }
 				}
 				//troviamo la posizione dello stack min_sort[s_star] in min[i]
+				noloop=0;
 				for(i=0;i<=NSTACK-1;i++){
 					for(j=0;j<=(NSTACK-1)*3;j++){
-						if(bay[i][j]==min_sort[s_star]){
+						if((bay[i][j]==min_sort[s_star])&&(noloop==0)){
 							s_star=i;
 							printf("\nBlocco %d da rilocare in posizione %d di min[i] \n",r,s_star+1);
+							//printf(" min_sort[s_star]=%d ",min_sort[s_star]);
+							noloop++;//evitiamo di rientrare nel for
 							break;
 						}
 					}
 				}
 				printf("\n");
 				//ora s_star contiene lo stack da rilocare
-				for(i=0;i<=NSTACK-1;i++){
+				for(i=0;i<=(NSTACK-1)*3;i++){
 					if(bay[s_star][i]==0){
 						bay[s_star][i]=r; //inseriamo il blocco sul nuovo stack
 						break;//lo poggio ed esco
@@ -189,14 +191,14 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 			maxstack=find_max_stack(min,NSTACK-1);
 			printf("Non ho trovato nessun min[i]>%d considero maxstack=%d \n",r,maxstack+1);
 			for(i=0;i<=NSTACK-1;i++){
-			  for(j=0;j<=NSTACK-1;j++){
+			  for(j=0;j<=(NSTACK-1)*3;j++){
 				  if(bay[i][j]==r){
 					  bay[i][j]=0; //togliamo il blocco dal vecchio stack
 				  }
 			  }
 			}
 			//troviamo la cima di maxstack
-			for(i=0;i<=NSTACK-1;i++){
+			for(i=0;i<=(NSTACK-1)*3;i++){
 				if(bay[maxstack][i]==0){
 					bay[maxstack][i]=r; //inseriamo il blocco sul nuovo stack
 					break;//lo poggio ed esco
@@ -217,7 +219,7 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 	}//while(dimR!=0)
 
 	//ora posso togliere il blocco dalla baia
-	printf("\ntolgo il blocco %d dalla baia \n\n",priority);
+	printf("\nTolgo il blocco %d dalla baia \n\n",priority);
 	for(i=0;i<=NSTACK-1;i++){
 		for(j=0;j<=(NSTACK-1)*3;j++){
 			if(bay[i][j]==priority){
@@ -231,7 +233,8 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 
 }//for(priority=1;....
 
-printf("tolgo il blocco finale %d dalla baia \n",priority);
+printf("tolgo il blocco finale %d dalla baia \nHo dovuto rilocare %d blocchi",priority,move_counter);
+
 fclose(file);
 return(0);
 }
