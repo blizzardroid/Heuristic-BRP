@@ -21,8 +21,7 @@ int i;
 	}
 }
 int find_max_stack(int v[],int dim){
-int i, max,max_i;
-max=v[0];
+int i, max=v[0],max_i=0;
 	for(i=1;i<=dim;i++){
 		if(v[i]>max){
 			max=v[i];
@@ -179,6 +178,7 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 						if(bay[i][0]==0){
 							s_star=i;
 							printf("lo metto nello stack vuoto ");
+							break;
 						}
 					}
 				}
@@ -199,6 +199,7 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 
 		//non siamo riusciti a trovare in min[i] nessun valore > r
 		if(flag==0){//altrimenti lo rilochiamo nel max{min[i]}
+			//printf("min[i]: %d %d %d %d %d \n",min[0],min[1],min[2],min[3]);
 			maxstack=find_max_stack(min,NSTACK-1);
 			printf("Non ho trovato nessun min[i]>%d considero maxstack=%d \n",r,maxstack+1);
 			for(i=0;i<=NSTACK-1;i++){
