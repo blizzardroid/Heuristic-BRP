@@ -146,9 +146,10 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 		//printf("min ordinati: %d %d %d %d %d \n",min_sort[0],min_sort[1],min_sort[2],min_sort[3],min_sort[4]);
 
 		//ora dobbiamo calcolare S* per rilocare r
+		noloop=0;
 		for(s_star=0;s_star<=NSTACK-1;s_star++){
-			if(min_sort[s_star]>r){
-				//abbiamo trovato il più piccolo valore di min[i] che sia maggiore di r
+			if((min_sort[s_star]>r)&&(noloop==0)){
+				// più piccolo valore di min[i] che sia maggiore di r
 				printf("Trovato: ");
 				printf(" min[i]=%d>%d ",min_sort[s_star],r);
 				for(i=0;i<=NSTACK-1;i++){
@@ -160,6 +161,7 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 				}
 				//troviamo la posizione dello stack min_sort[s_star] in min[i]
 				noloop=0;
+				//printf(" noloop=%d ",noloop);
 				for(i=0;i<=NSTACK-1;i++){
 					for(j=0;j<=(NSTACK-1)*3;j++){
 						if((bay[i][j]==min_sort[s_star])&&(noloop==0)){
@@ -168,6 +170,15 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 							//printf(" min_sort[s_star]=%d ",min_sort[s_star]);
 							noloop++;//evitiamo di rientrare nel for
 							break;
+						}
+					}
+				}
+				//se min[i] ha stack vuoti lo metto nel primo vuoto
+				if(min_sort[s_star]==NBLOCK+1){
+					for(i=0;i<=NSTACK-1;i++){
+						if(bay[i][0]==0){
+							s_star=i;
+							printf("lo metto nello stack vuoto ");
 						}
 					}
 				}
