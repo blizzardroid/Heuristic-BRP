@@ -2,6 +2,7 @@
  ============================================================================
  Name        : euristicaBRP.c
  Author      : Andrea Mancini - Università di Bologna
+ Mail		 : andrea.mancini14[chiocciola]studio.unibo.it
  Version     : 1.0
  Description : Euristica Min-Max del BRP (Blocks Relocation Problem)
  ============================================================================
@@ -30,8 +31,7 @@ int i, max=v[0],max_i=0;
 	}
 return max_i;
 }
-void BubbleSort(int a[], int dim)
- {
+void BubbleSort(int a[], int dim){
  int i, j, priority;
  for (i = 0; i < (dim - 1); ++i)
  {
@@ -56,17 +56,17 @@ int NSTACK;		//Numero di Stack dell'istanza presa in input
 int NBLOCK;		//Numero di Blocchi dell'istanza presa in input
 int priority=1; //La priorità del blocco da evadere
 int r; 			//Blocco da rilocare in cima allo stack di R
-int min[MAXSTACK],min_sort[MAXSTACK];//vettore che contiene le priorità più alte di tutti i blocchi per ogni stack
-int maxstack,minstack;		 //contiene il massimo dei min[i]
+int min[MAXSTACK],min_sort[MAXSTACK];//vettori che contiengono le priorità più alte di tutti i blocchi per ogni stack
+int maxstack;		 //contiene il massimo dei min[i]
 int R[HMAX]; 	//insieme di blocchi da rilocare (con politica LIFO)
-int i,j,z,noloop=0,stack=0,h,dimR=0,flag=0,s_star;
+int i,j,z,h,noloop=0,dimR=0,flag=0,s_star;
 FILE * file;
 
 
 printf("------Euristica Min-Max del Blocks Relocation Problem (BRP)------\n");
-printf("-----------------      Università di Bologna    -------------\n");
+printf("-----------------      Università di Bologna    -------------\n\n");
 
-file= fopen ("//home//blizzard//Scrivania//BRP//istanze//data3-4-6.dat","r");
+file= fopen ("//home//blizzard//Scrivania//BRP//istanze//data5-10-18.dat","r");
 if (file!=NULL){
 	printf("Aperto file dati dell'istanza iniziale.... \n");
 }
@@ -84,15 +84,14 @@ for(i=0;i<=NSTACK-1; i++){
 //Lettura del file e stampa a video
 for(i=0;i<=NSTACK-1; i++){
   fscanf(file, "%d", &h);
-  for(j=0;j<=h-1; j++){
-	  fscanf(file, "%d",&bay[stack][j]);
-	  printf("%d ",bay[stack][j]);
+  for(j=0;j<=h-1;j++){
+	  fscanf(file, "%d",&bay[i][j]);
+	  printf("%d ",bay[i][j]);
   }
-  stack++;
   printf("\n");
 }
 
-//Applicazione dell'algoritmo sull'istanza bay per  NBLOCK-1
+//Applicazione dell'algoritmo sull'istanza bay per NBLOCK-1
 for(priority=1;priority<=NBLOCK-1; priority++){
 	//Troviamo l'insieme R e la sua dimensione
 	for(i=0;i<=NSTACK-1;i++){
@@ -120,9 +119,8 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 		for(z=0;z<=NSTACK-1;z++){
 			if(bay[z][0]==0){	//se lo stack è vuoto lo consideriamo come NBLOCK+1
 				min[z]=NBLOCK+1;
-				//printf("DEBUG: considero lo stack %d come vuoto \n",z+1);
 			}
-			else{				//altrimenti per quello stack consideriamo il più prioritario
+			else{			//altrimenti per quello stack consideriamo il più prioritario
 				min[z]=bay[z][0];
 				for(j=1;j<=(NSTACK-1)*3;j++){
 					if((bay[z][j]<min[z])&&(bay[z][j]!=0)){
@@ -139,10 +137,9 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 		//usiamo un vettore min_sort di supporto per controllare i min[i]
 		//dal piu piccolo al piu grande (caso arg{ min[i]>r })
 		cp_vector(min_sort,min,NSTACK-1);
-		//printf("min copiata: %d %d %d %d %d \n",min_sort[0],min_sort[1],min_sort[2],min_sort[3],min_sort[4]);
 		BubbleSort(min_sort,NSTACK); //ordiniamo dal più piccolo al più grande
-		//printf("min normali: %d %d %d %d %d \n",min[0],min[1],min[2],min[3],min[4]);
-		//printf("min ordinati: %d %d %d %d %d \n",min_sort[0],min_sort[1],min_sort[2],min_sort[3],min_sort[4]);
+		//printf("min[i]: %d %d %d %d %d \n",min[0],min[1],min[2],min[3],min[4]);
+		//printf("min[i] ordinati: %d %d %d %d %d \n",min_sort[0],min_sort[1],min_sort[2],min_sort[3],min_sort[4]);
 
 		//ora dobbiamo calcolare S* per rilocare r
 		noloop=0;
@@ -168,7 +165,6 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 							printf("\nBlocco %d da rilocare in posizione %d di min[i] \n",r,s_star+1);
 							//printf(" min_sort[s_star]=%d ",min_sort[s_star]);
 							noloop++;//evitiamo di rientrare nel for
-							break;
 						}
 					}
 				}
@@ -177,7 +173,7 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 					for(i=0;i<=NSTACK-1;i++){
 						if(bay[i][0]==0){
 							s_star=i;
-							printf("lo metto nello stack vuoto ");
+							printf("lo metto nel primo stack vuoto ");
 							break;
 						}
 					}
@@ -191,7 +187,7 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 					}
 				}
 			flag=1;
-			break;// non considero gli altri min[i]
+			break;// non considero gli altri possibili min[i]
 			}
 		}
 
@@ -231,7 +227,7 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 	}//while(dimR!=0)
 
 	//ora posso togliere il blocco dalla baia
-	printf("\nTolgo il blocco %d dalla baia \n\n",priority);
+	printf("\nTolgo il blocco %d dalla baia ->\n\n",priority);
 	for(i=0;i<=NSTACK-1;i++){
 		for(j=0;j<=(NSTACK-1)*3;j++){
 			if(bay[i][j]==priority){
@@ -241,7 +237,7 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 		}
 		printf("\n");
 	}
-	printf("\n------------\n");
+	printf("-------------------------------\n");
 
 }//for(priority=1;....
 
