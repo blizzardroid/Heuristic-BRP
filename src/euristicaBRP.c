@@ -66,7 +66,7 @@ FILE * file;
 printf("------Euristica Min-Max del Blocks Relocation Problem (BRP)------\n");
 printf("-----------------      Università di Bologna    -------------\n\n");
 
-file= fopen ("//home//blizzard//Scrivania//BRP//istanze//data4-4-2.dat","r");
+file= fopen ("//home//blizzard//Scrivania//BRP//istanze//data3-8-3.dat","r");
 if (file!=NULL){
 	printf("Aperto file dati dell'istanza iniziale.... \n");
 }
@@ -155,39 +155,49 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 					  }
 				  }
 				}
-				//troviamo la posizione dello stack min_sort[s_star] in min[i]
-				//printf(" noloop=%d ",noloop);
+
+
+
+				//Altrimenti troviamo la posizione dello stack min_sort[s_star] in min[i]
 				for(i=0;i<=NSTACK-1;i++){
 					for(j=0;j<=(NSTACK-1)*3;j++){
-						if((bay[i][j]==min_sort[s_star])&&((min_sort[s_star]!=NBLOCK+1))&&(noloop==0)){
+						if((bay[i][j]==min_sort[s_star])&&(min_sort[s_star]<=NBLOCK+1)&&(noloop==0)){
 							s_star=i;
+							noloop++;//evitiamo di rientrare nel for
 							printf("\nBlocco %d da rilocare in posizione %d di min[i] \n",r,s_star+1);
 							//printf(" min_sort[s_star]=%d ",min_sort[s_star]);
-							noloop++;//evitiamo di rientrare nel for
-						}
-					}
-				}
-	/*			//se min[i] ha stack vuoti lo metto nel primo vuoto
-				if((min_sort[s_star]==NBLOCK+1)){
-					for(i=0;i<=NSTACK-1;i++){
-						if(bay[i][0]==0){
-							s_star=i;
-							printf("lo metto nel primo stack vuoto S*=%d",s_star+1);
 							break;
 						}
 					}
 				}
-	*/			printf("\n");
+
+				printf("\n");
+
+
+				//se min[i] ha stack vuoti lo metto nel primo vuoto
+				if((min_sort[s_star]>=NBLOCK+1)){
+					for(i=0;i<=NSTACK-1;i++){
+						if((bay[i][0]==0)&&(noloop==0)){
+							s_star=i;
+							printf("lo metto nel primo stack vuoto S*=%d \n",s_star+1);
+							noloop++;//evitiamo di rientrare nel for
+							break;
+						}
+					}
+				}
+
+
 				//ora s_star contiene lo stack da rilocare
+				//scorriamo tutti i blocchi di s_star e inseriamo r in cima
 				for(i=0;i<=(NSTACK-1)*3;i++){
 					if(bay[s_star][i]==0){
-						bay[s_star][i]=r; //inseriamo il blocco sul nuovo stack
+						bay[s_star][i]=r; //inseriamo il blocco nel nuovo stack
 						break;//lo poggio ed esco
 					}
 				}
 			flag=1;
 			break;// non considero gli altri possibili min[i]
-			}
+			}//if noloop
 		}
 
 //CASO ARGMAX{ min(i) }
