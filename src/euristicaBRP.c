@@ -66,7 +66,7 @@ FILE * file;
 printf("------Euristica Min-Max del Blocks Relocation Problem (BRP)------\n");
 printf("-----------------      Università di Bologna    -------------\n\n");
 
-file= fopen ("//home//blizzard//Scrivania//BRP//istanze//data5-10-18.dat","r");
+file= fopen ("//home//blizzard//Scrivania//BRP//istanze//data4-4-2.dat","r");
 if (file!=NULL){
 	printf("Aperto file dati dell'istanza iniziale.... \n");
 }
@@ -156,11 +156,10 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 				  }
 				}
 				//troviamo la posizione dello stack min_sort[s_star] in min[i]
-				noloop=0;
 				//printf(" noloop=%d ",noloop);
 				for(i=0;i<=NSTACK-1;i++){
 					for(j=0;j<=(NSTACK-1)*3;j++){
-						if((bay[i][j]==min_sort[s_star])&&(noloop==0)){
+						if((bay[i][j]==min_sort[s_star])&&((min_sort[s_star]!=NBLOCK+1))&&(noloop==0)){
 							s_star=i;
 							printf("\nBlocco %d da rilocare in posizione %d di min[i] \n",r,s_star+1);
 							//printf(" min_sort[s_star]=%d ",min_sort[s_star]);
@@ -168,17 +167,17 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 						}
 					}
 				}
-				//se min[i] ha stack vuoti lo metto nel primo vuoto
-				if(min_sort[s_star]==NBLOCK+1){
+	/*			//se min[i] ha stack vuoti lo metto nel primo vuoto
+				if((min_sort[s_star]==NBLOCK+1)){
 					for(i=0;i<=NSTACK-1;i++){
 						if(bay[i][0]==0){
 							s_star=i;
-							printf("lo metto nel primo stack vuoto ");
+							printf("lo metto nel primo stack vuoto S*=%d",s_star+1);
 							break;
 						}
 					}
 				}
-				printf("\n");
+	*/			printf("\n");
 				//ora s_star contiene lo stack da rilocare
 				for(i=0;i<=(NSTACK-1)*3;i++){
 					if(bay[s_star][i]==0){
