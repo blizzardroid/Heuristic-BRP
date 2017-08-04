@@ -1,10 +1,10 @@
 /*
  ============================================================================
  Name        : euristicaBRP.c
- Author      : Andrea Mancini - Università di Bologna
- Mail		 : andrea.mancini14[chiocciola]studio.unibo.it
+ Author      : Andrea Mancini - University of Bologna
+ Mail	     : andrea.mancini14[AT]studio.unibo.it
  Version     : 1.0
- Description : Euristica Min-Max del BRP (Blocks Relocation Problem)
+ Description : Heuristic Min-Max of BRP (Blocks Relocation Problem)
  ============================================================================
  */
 
@@ -132,7 +132,7 @@ for(priority=1;priority<=NBLOCK-1; priority++){
 		}
 		printf("\n------------\n");
 
-//CASO ARGMIN{ min(i)>r }
+//Case ARGMIN{ min(i)>r }
 
 		//usiamo un vettore min_sort di supporto per controllare i min[i]
 		//dal piu piccolo al piu grande (caso arg{ min[i]>r })
